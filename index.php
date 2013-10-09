@@ -22,7 +22,7 @@
  * as this file.
  *
  */
-	$system_path = "system";//sdfasdf
+	$system_path = "system";
 
 /*
  *---------------------------------------------------------------
