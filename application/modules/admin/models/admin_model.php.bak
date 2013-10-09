@@ -1,0 +1,192 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Admin_model extends CI_Model 
+{
+	/**
+	 * 计算 所有用户(n^2) 的匹配结果
+	 *
+	 */
+	function match_all_user()
+	{
+		$user_list = $this->db->get('account');
+
+		foreach($user_list->result() as $row_a)
+		{
+			foreach($user_list->result() as $row_b)
+			{
+				if($row_a->uid != $row_b->uid)
+				{
+					$result = $this->admin_model->match( $row_a->uid, $row_b->uid );
+					
+					$data = array(
+						'score' => $result['score'],
+						'host_uid'  => $row_a->uid,
+						'guest_uid' => $row_b->uid
+					);
+
+					$query = $this->db->from('match')->where('host_uid',$row_a->uid)->where('guest_uid',$row_b->uid)->get();
+					
+					//echo $row_a->uid;
+					//echo " ";
+					//echo $row_b->uid;
+					//echo " ";
+
+					if( $query->num_rows() > 0 && $query->row('score') != $result['score'] )//已存在，且不相同，进行更新
+					{
+						//echo "更新 ";
+						$this->db->where('host_uid',$row_a->uid)->where('guest_uid',$row_b->uid)->update('match',$data);
+					}
+					elseif($query->num_rows() <= 0)//不存在，进行插入
+					{
+						//echo "插入 ";
+						$this->db->insert('match',$data);
+					}
+					else
+					{
+						//echo "nothing";
+					}
+				echo "\n";
+				}
+			}
+		}
+
+	}
+
+	// --------------------------------------------------------------------
+
+
+	/**
+	 * 对 用户 A和B 的人物 进行匹配，并评分  不mark遇见
+	 *
+	 * @access public
+	 * @param int $A_id
+	 * @param int $b_id
+	 * @return array $result
+	 */
+	function match($A_id, $B_id)
+	{
+		$celebrity_A = $this->db->where('uid', $A_id)->from('celebrity_user')->get();
+		$celebrity_B = $this->db->where('uid', $B_id)->from('celebrity_user')->get();
+		
+		//$hash;          //保存所有A或B评价过的人物cid：对于$hash[i]，若值为1，表示A、B中只有1人评价过该人物i； 若值为2，表示A、B2人都评价过该人物i
+		//$hash_score_A;  //记录用户A的打分情况
+		//$hash_score_B;
+		$hash=array();
+		$hash_score_A=array();
+		$hash_score_B=array();
+		
+		//返回结果集
+		$result['score']      = 0;//匹配得分
+
+		$result['same_c']     = 0;//相同
+		$result['same_like_c']     = 0;//都喜欢
+		$result['same_dislike_c']  = 0;//都讨厌
+		
+		$result['different_c']= 0;//相反
+		$result['different_i_like_c']  = 0;//我喜欢，ta讨厌
+		$result['different_i_dislike_c']  = 0;//我讨厌，ta喜欢
+
+		$result['his_own_c']  = 0; //A未评价，B已评价 的人物数目，推荐
+		$result['my_own_c']   = 0;  //A已评价，B未评价 的人物数目
+
+		$result['full_score'] = 0;//满分
+
+		foreach ($celebrity_A->result() as $row)//遍历 用户A评价过的人物
+		{
+			$hash[ $row->cid ] = 1;
+			$hash_score_A[ $row->cid ] = intval( $row->score );
+
+			//计算满分值
+			if( $hash_score_A[ $row->cid ]==100 || $hash_score_A[ $row->cid ]==-100 )
+			{
+				$result['full_score'] += 10;
+			}
+			elseif( $hash_score_A[ $row->cid ]==75 || $hash_score_A[ $row->cid ]==-75 )
+			{
+				$result['full_score'] += 6;
+			}
+			elseif( $hash_score_A[ $row->cid ]==50 || $hash_score_A[ $row->cid ]==-50 )
+			{
+				$result['full_score'] += 3;
+			}
+		}
+
+		foreach ($celebrity_B->result() as $row)//遍历 用户B评价过的人物
+		{
+			if(array_key_exists($row->cid,$hash) && $hash[ $row->cid ] == 1)//用户A也评价过
+			{
+				$hash[ $row->cid ] = 2;
+				$hash_score_B[ $row->cid ] = intval( $row->score );
+			}
+			else
+			{
+				$hash[ $row->cid ] = 1;
+				$hash_score_B[ $row->cid ] = intval( $row->score );
+			}
+		}
+
+		foreach ($hash as $key => $value) //遍历 所有A或B 评价过的人物
+		{
+			if($value==1) //1人评价过，另1人未评价
+			{
+				if( array_key_exists($key,$hash_score_A) && $hash_score_A[$key] != null ) //A已评价，B未评价
+				{
+					$result['score'] += $this->celebrity_model->get_score($hash_score_A[$key], 0);
+					$result['my_own'][ $result['my_own_c']++ ] = $key; //记录A已评价，B未评价的人物
+				}
+				else if( array_key_exists($key,$hash_score_B) && $hash_score_B[$key] != null) //A未评价，B已评价
+				{
+					$result['score'] += $this->celebrity_model->get_score(0, $hash_score_B[$key]);
+					$result['his_own'][ $result['his_own_c']++ ] = $key; //记录A未评价，B已评价的人物
+				}
+			} 
+			else if($value==2)//2人都评价过
+			{
+				//取得A、B 对人物$key 的打分
+				$a = $hash_score_A[$key];
+				$b = $hash_score_B[$key];
+
+				if( $a * $b > 0) //态度相同
+				{
+					$result['same'][ $result['same_c']++ ] = $key;
+
+					if($a > 0) //都喜欢
+					{
+						$result['same_like'][ $result['same_like_c']++ ] = $key;
+					}
+					else //都讨厌
+					{
+						$result['same_dislike'][$result['same_dislike_c']++] = $key;
+					}
+				}
+				else //态度相反
+				{
+					$result['different'][$result['different_c']++] = $key;
+					
+					if($a > 0) //我喜欢，ta讨厌
+					{
+						$result['different_i_like'][$result['different_i_like_c']++]  =  $key;
+					}
+					else //我讨厌，ta喜欢
+					{
+						$result['different_i_dislike'][$result['different_i_dislike_c']++]  =  $key;
+					}
+				}
+
+				$result['score'] += $this->celebrity_model->get_score($a,$b);
+			}
+		}
+
+		if($result['full_score']!=0)
+			$result['score'] = 100 * round( ($result['score'] + $result['full_score'])/($result['full_score']+$result['full_score']) , 2 );
+		else
+			$result['score'] = 0;
+
+
+		return $result;
+	}
+	
+}
+
+/* End of file admin_model.php */
+/* Location: ./application/modules/admin/models/admin_model.php */

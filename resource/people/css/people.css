@@ -1,0 +1,57 @@
+html, body, .people{height: 100%;}
+body > .people{height:auto; min-height:85%;}
+
+/*people/index样式*/
+.people{clear: both;margin:0 auto;width:600px;}
+.people .people_infor{width:460px;}
+.people .people_infor .info_bottom a:hover{background-color:#E8EDF4;}
+.people .evaluate_titile{height:45px;width:600px;font-family:'微软雅黑';background-color:#f5f5f5;}
+
+.people .upload_photo{line-height:400%;width:331px;height:62px;display:block;background-image:url(http://www.whereismysheep.com/beta/resource/people/image/pho_intro.png);color:#22aa4a;}
+.people .introduce{line-height:400%;width:331px;height:62px;display:block;background-image:url(http://www.whereismysheep.com/beta/resource/people/image/pho_intro.png);color:#22aa4a;}
+.people .upload_photo:hover{line-height:400%;width:331px;height:62px;display:block;background-image:url(http://www.whereismysheep.com/beta/resource/people/image/pho_intro_hover.png);color:#22aa4a;}
+.people .introduce:hover{line-height:400%;width:331px;height:62px;display:block;background-image:url(http://www.whereismysheep.com/beta/resource/people/image/pho_intro_hover.png);color:#22aa4a;}
+
+.people .our_match_info{width:600px;height:110px;border-bottom:1px dashed #CCC;}
+.people .match_info a:hover{background-color:#CCC;}
+.people .our_match_info .Interested{width:89px;height:36px;background-image:url(http://www.whereismysheep.com/beta/resource/people/image/Interested.png);border:none;color:#1a863a;cursor:pointer;}
+.people .our_match_info .Interested:hover{width:89px;height:36px;background-image: url(http://www.whereismysheep.com/beta/resource/people/image/Interested_hover.png);border:none;color:#1a863a;cursor:pointer;}
+.people .our_match_info .Not_Interested{border:none;background-color:#FFF;cursor:pointer;color:#ccc;margin-top:1px;}
+.people .our_match_info .Not_Interested:hover{background-color:#E8EDF4;}
+.people .same_a:hover{background-color:#CCC;}
+.people .different_a:hover{background-color:#CCC;}
+
+.people .match_left0{width:126px;height:79px;border:1px solid #666;background-color:#f5f5f5;color:#1a883a;font-family:'微软雅黑';line-height:500%;}
+.people .match_right9{width:464px;height:79px;border:1px solid #666;background-color:#f5f5f5;color:#bb0000;font-family:'微软雅黑';line-height:500%;}
+.people .match_left9{width:464px;height:79px;border:1px solid #666;background-color:#f5f5f5;color:#1a883a;font-family:'微软雅黑';line-height:500%;}
+.people .match_right0{width:126px;height:79px;border:1px solid #666;background-color:#f5f5f5;color:#bb0000;font-family:'微软雅黑';line-height:500%;}
+.people .match_left1{width:197px;height:79px;border:1px solid #666;background-color:#f5f5f5;color:#1a883a;font-family:'微软雅黑';line-height:500%;}
+.people .match_right2{width:394px;height:79px;border:1px solid #666;background-color:#f5f5f5;color:#bb0000;font-family:'微软雅黑';line-height:500%;}
+.people .match_left2{width:394px;height:79px;border:1px solid #666;background-color:#f5f5f5;color:#1a883a;font-family:'微软雅黑';line-height:500%;}
+.people .match_right1{width:197px;height:79px;border:1px solid #666;background-color:#f5f5f5;color:#bb0000;font-family:'微软雅黑';line-height:500%;}
+.people .match_left{width:295px;height:79px;border:1px solid #666;background-color:#f5f5f5;color:#1a883a;font-family:'微软雅黑';line-height:500%;}
+.people .match_right{width:295px;height:79px;border:1px solid #666;background-color:#f5f5f5;color:#bb0000;font-family:'微软雅黑';line-height:500%;}
+
+/*people/meet样式*/
+.people .match_info .info_bottom a:hover{background-color:#E8EDF4;}/*meet和index头像部分公用*/
+.people .meet_content{height:175px;}
+.people .meet_content .meet-text{margin-top:60px;}
+.people .meet_content .Interested{width:89px;height:36px;background-image:url(http://www.whereismysheep.com/beta/resource/people/image/Interested.png);border:none;color:#FFF;cursor:pointer; margin-right:33px;margin-top:48px;}
+.people .meet_content .Not_Interested{width:89px;height:36px;background-image:url(http://www.whereismysheep.com/beta/resource/people/image/Not_Interested.png);border:none;color:#FFF;cursor:pointer; margin-right:33px;margin-top:48px;}
+.people .meet_header a:hover{background-color:#E8EDF4;}
+
+
+/*people/index样式*/
+.people .check_all:hover{background-color:#E8EDF4;}
+.people .celebrity_a:hover{background-color:#E8EDF4;}
+.people .hotel_a:hover{background-color:#E8EDF4;}
+
+/*people/same和different页面看法的字体样式*/
+.people .meet_content .like_100{color:#ED1C24;}
+.people .meet_content .like_75{color:#F96400;}
+.people .meet_content .like_50{color:#CECE00;}
+.people .meet_content .dislike_100{color:#914848;}
+.people .meet_content .dislike_75{color:#00C6C6;}
+.people .meet_content .dislike_50{color:#00B000;}
+
+.people .meet_detail{height:43px;background-color:#f5f5f5;}

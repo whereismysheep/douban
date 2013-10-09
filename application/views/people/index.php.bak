@@ -1,0 +1,271 @@
+<?php
+$this->load->view('public/public_header');
+?>
+<body>
+<?php if($page_uid == $account->uid): ?> <!-- 登录用户 的 主页 -->
+
+<div class="people public-font">
+	<div class="w600 h180 mb20">
+    	<a href="<?php echo site_url('people/index');?>"><img src="<?php echo base_url(); ?>data/avatar/<?php echo $account->uid; ?>/big.jpg" class=" fl w100 h100 mt50 mr10" style="border:1px solid #000;"/></a>	
+        <div class="match_info fr w460">
+        	<div class="info_top mt80">
+    			<h1 class="f18 lh100">
+                	<?php echo $this->account_model->get_account_name($account->uid); ?>		
+                </h1>
+           	</div>
+            <div class="info_bottom mt30">
+				<a href="<?php echo site_url('people/index');?>" class="f14 no_unl mr20 blue">
+					主页
+				</a>
+				<a href="<?php echo site_url("celebrity/mine/index/$account->uid");?>" class="mr20 f14 no_unl" style="color:#3e3e3e;" >
+					看法
+				</a>
+				<a href="<?php echo site_url("people/meet");?>" class="mr20 f14 no_unl" style="color:#3e3e3e;">
+					遇见的人
+				</a>
+				<a href="<?php echo site_url("account/account_profile");?>" class="mr20 f14 no_unl" style="color:#3e3e3e;" target="_blank">
+					设置
+				</a>
+            </div>
+ 		</div>
+    </div>
+	
+	<?php if($check_avatar==FALSE): ?>
+		<div class="w600 h70 f15 mt40">
+			<a href="<?php echo site_url("account/upload_avatar");?>" class="upload_photo no_unl tc" target="_blank">
+				上传一张cool的头像
+			</a>
+		</div>
+	<?php endif; ?>
+		
+	<?php if(strlen($introduction)==0): ?>
+		<div class="w600 h120 f15 mt50">		
+			<a href="<?php echo site_url("account/account_profile");?>" class="introduce no_unl tc" target="_blank">
+				写一句话介绍自己
+			</a>
+		</div>
+	<?php else: ?>		
+		<div class="h150 w600 tl lh300 gray f15 mt30" style="word-wrap:break-word;" >
+			<?php echo $introduction; ?>
+		</div>
+	<?php endif; ?>	
+
+	<div class="w600 h250">
+    	<div class="evaluate_titile f14" style="line-height:320%;">
+			<div class="fl w150 ml15">遇见了 <?php echo $meet_count; ?> 个人</div>
+			<div class="fr w400">
+				（<a href="<?php echo site_url('people/meet');?>" class="no_unl hotel_a" style="color:#3e3e3e;">
+					查看全部
+				</a> ）
+			</div>
+        </div>
+		
+		<div class="w600 h150">
+			<?php foreach($meet->result() as $row): ?>
+				<div class="mt40 w90 fl tc">
+					<a href="<?php echo site_url("people/index/$row->guest_uid");?>" class="no_unl" target="_blank">
+						<img src="<?php echo base_url(); ?>data/avatar/<?php echo $row->guest_uid; ?>/middle.jpg"/>
+					</a>
+					<div class="f12 mt15">
+						<?php echo $this->account_model->get_account_name($row->guest_uid); ?>
+             		</div>
+        		</div>
+			<?php endforeach; ?>
+		</div>
+	</div>
+
+	<div class="w600 h250 mb50">
+    	<div class="evaluate_titile f14" style="line-height:320%;">
+			<div class="fl w150 ml15">发表了 <?php echo $celebrity_count; ?> 个看法</div>
+			<div class="fr w400">
+				（<a href="<?php echo site_url('celebrity/mine/index');?>" class="no_unl celebrity_a" style="color:#3e3e3e;">
+					查看全部
+				</a> ）
+			</div>
+        </div>
+     
+		<?php foreach($celebrity->result() as $row): ?>
+		<ul class="w100 h100 fl tl mt40 tc">
+            <li>
+				<a href="<?php echo site_url("celebrity/profile/index/$row->cid");?>" class="no_unl">
+					<img src="<?php echo base_url(); ?>data/celebrity/<?php echo $row->cid; ?>/middle.jpg" />
+				</a>  
+				<div class="f12 mt15">
+					<?php echo $this->celebrity_model->get_celebrity_name($row->cid); ?>
+				</div>
+			</li>
+        </ul>
+		<?php endforeach; ?>     
+	</div>
+
+</div>
+
+
+<?php else: ?> <!-- 查看 其他用户 的 主页 -->
+
+
+<div class="people public-font">
+	<div class="w600 h170">
+    	<a href="<?php echo site_url("people/index/$page_uid");?>">
+			<img src="<?php echo base_url(); ?>data/avatar/<?php echo $page_uid; ?>/big.jpg" class=" fl w100 h100 mt50 mr10" style="border:1px solid #000;"/>
+		</a>
+		
+        <div class="match_info fr w460">
+        	<div class="info_top mt80">
+    			<h1 class="f18 lh100">
+                	<?php echo $this->account_model->get_account_name($page_uid); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </h1>	    	
+           	</div>
+            <div class="info_bottom mt30 f14">
+				<a href="<?php echo site_url("people/index/$page_uid");?>" class="blue no_unl mr20">
+					主页
+				</a>							
+				<a href="<?php echo site_url("people/all/$page_uid");?>" class="mr20 no_unl" style="color:#3e3e3e;" target="_blank">
+					比较结果
+				</a>
+				<a href="<?php echo site_url("celebrity/mine/index/$page_uid");?>" class="mr20 no_unl" style="color:#3e3e3e;" >
+					全部看法
+				</a>
+            </div>
+ 		</div>
+    </div>
+
+	<div class="our_match_info mt15" style="border:none;">
+		<?php if($relationship == "none"): ?><!--  -->
+				
+			<?php echo form_open(uri_string()); ?>
+				<button name="following_state" type="submit" class="Interested ml5 fl mt9 public-font f14" value="add">&nbsp;&nbsp; 感兴趣</button>
+			<?php echo form_close(); ?>
+
+		<?php elseif($relationship == "follower"): ?>
+						
+			<?php echo form_open(uri_string()); ?>
+				<button name="following_state" type="submit" class="Interested ml5 fl mt9 public-font f14" value="add">&nbsp;&nbsp; 感兴趣</button>
+			<?php echo form_close(); ?>
+				
+		<?php elseif($relationship == "following"): ?>
+			<div class="h30 w85 ml10 fl mt18 f12">
+				<div class="fl">
+					<span style="color:#009933;">感兴趣</span>
+					<span style="color:#CCC;">></span>
+				</div>	
+				<?php echo form_open(uri_string()); ?>
+					<input name="following_state" type="submit" class="Not_Interested fr" value="取消"  />
+				<?php echo form_close(); ?>
+			</div>
+				
+		<?php elseif($relationship == "each_other"): ?>
+			<div class="h30 w85 ml10 fl mt18 f12">
+				<div class="fl">
+					<span style="color:#009933;">感兴趣</span>
+					<span style="color:#CCC">></span>
+				</div>
+				<?php echo form_open(uri_string()); ?>
+					<input name="following_state" type="submit" class="Not_Interested fr" value="取消"/>
+				<?php echo form_close(); ?></div>	
+				
+		<?php endif; ?>
+
+		<div class="h100 f15 fr lh350 gray w460">
+			<?php echo $introduction; ?>
+		</div>
+	</div>
+
+	<div class="match_info f20 lh200 w600 h30 mt20">
+		相似度&nbsp;		
+		<span class="blue">
+			<?php echo $score; ?>%
+		</span>
+		<span class="blue ">
+			( <?php echo $this->user_model->get_score_explain($score); ?> )	
+		</span>          		
+	</div>
+
+	<div class="w600 h120 mt50 f16 tc">
+		
+		<?php if( $same_count == 0 || $different_count/$same_count >= 3 ): ?> <!-- 0 : +++ -->
+			
+			<a class="fl match_left0 no_unl " id="match_left0" href="<?php echo site_url("people/same/$page_uid");?>">
+				看法相似 <?php echo $same_count; ?>
+			</a>
+			<a class="fr match_right9 no_unl" id="match_right9" href="<?php echo site_url("people/different/$page_uid");?>">
+				看法相反 <?php echo $different_count;  ?>
+			</a>
+		<?php elseif( $different_count == 0 || $same_count/$different_count >= 3 ): ?> <!-- +++ : 0 -->
+			
+			<a class="fl match_left9 no_unl" id="match_left9" href="<?php echo site_url("people/same/$page_uid");?>">
+				看法相似 <?php echo $same_count; ?>
+			</a>
+			<a class="fr match_right0 no_unl" id="match_right0" href="<?php echo site_url("people/different/$page_uid");?>">
+				看法相反 <?php echo $different_count; ;?>
+			</a>
+
+		<?php elseif( $different_count/$same_count >= 1.5 && $different_count/$same_count < 3 ): ?> <!-- 1 : 2 -->
+			
+			<a class="fl match_left1 no_unl"  id="match_left1" href="<?php echo site_url("people/same/$page_uid");?>">
+				看法相似 <?php echo $same_count ;?>		    
+			</a>
+			<a class="fr match_right2 no_unl"  id="match_right2"href="<?php echo site_url("people/different/$page_uid");?>">
+				看法相反 <?php echo $different_count; ?>
+			</a>
+
+		<?php elseif( $same_count/$different_count >= 1.5 && $same_count/$different_count < 3 ): ?> <!-- 2 : 1 -->
+			
+			<a class="fl match_left2 no_unl"  id="match_left2" href="<?php echo site_url("people/same/$page_uid");?>">
+				看法相似 <?php echo $same_count; ?>
+			</a>
+			<a class="fr match_right1 no_unl"  id="match_right1" href="<?php echo site_url("people/different/$page_uid");?>">
+				看法相反 <?php echo $different_count;?>
+			</a>
+
+		<?php elseif( $different_count/$same_count < 1.5 || $same_count/$different_count < 1.5 ): ?> <!-- 1 : 1 -->
+			
+			<a class="fl match_left no_unl"  id="match_left" href="<?php echo site_url("people/same/$page_uid");?>">
+				看法相似 <?php echo $same_count; ?>
+			</a>
+			<a class="fr match_right no_unl"  id="match_right" href="<?php echo site_url("people/different/$page_uid");?>">
+				看法相反 <?php echo $different_count; ?>
+			</a>
+
+		<?php endif; ?>
+		
+	</div>
+
+	<div class="h80 w600 f15 mt30">
+		性别： 
+		<?php if($gender == 's'): ?>
+			secret
+		<?php elseif($gender == 'm'): ?>
+			男
+		<?php elseif($gender == 'f'): ?>
+			女
+		<?php endif; ?>
+	</div>
+
+	<div class="h80 w600 f15">
+		地址： 海豚宾馆 &nbsp; &nbsp;<?php echo $this->user_model->get_user_room($page_uid); ?>
+	</div>
+
+	<div class="w600 h130 over">
+    	<div class="f15">
+			感兴趣的人 . . . ( <?php echo $following_num; ?> )
+        </div>
+		<?php foreach($following->result() as $row): ?>
+    	<ul>
+            <li class="fl w55 mt30">
+			<a href="<?php echo site_url("people/index/$row->uid");?>" class="no_unl" target="_blank">
+				<img src="<?php echo base_url(); ?>data/avatar/<?php echo $row->uid; ?>/small.jpg"/>
+			</a>
+         	</li>
+        </ul>
+		<?php endforeach; ?>
+	</div>
+</div>	
+
+<?php endif; ?>
+
+</body>
+
+<?php
+$this->load->view('public/public_footer');
+?>

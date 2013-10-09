@@ -1,0 +1,34 @@
+
+/*search/Index样式*/	
+html, body,.public-main{height:100%;}
+body >.public-main{height:auto; min-height:80%;}
+.public-main{width:600px;clear: both;margin:0 auto;}
+.search-out{ width:590px; height:150px;border-bottom:1px dashed #CCC;}
+.public-main .search-out .search-pf{ width:590px; height:100px;}
+.public-main .search-out .search-pf .search-font{margin-right:140px; margin-top:52px;font-family:'微软雅黑'; color: #666; width:330px; height:50px;} 
+.public-main .search-out .search-name{width:80px; height:30px;font-family:'微软雅黑';}
+
+/*public/public-header样式*/
+.public-header{clear: both;margin:0 auto;width:600px;height:40px;margin-bottom:10px;}
+.public-header a:hover{background-color:#E8EDF4;}
+
+/*公共弹窗样式*/
+.jqmWindow{display: none;position: fixed;width:381px;height:272px;top:35%;left:34%; background-color:#FFF; border:#000 solid 1px; }
+.like_button{width:77px;height:77px;border:none;cursor:pointer;}
+.jqmOverlay { background-color: #000;}/*弹出框改变背景颜色*/
+			/* Fixed posistioning emulation for IE6
+			Star selector used to hide definition from browsers other than IE6
+			For valid CSS, use a conditional include instead */
+			* html .jqmWindow {
+				position: absolute;
+				top: expression((document.documentElement.scrollTop || document.body.scrollTop) + Math.round(17 * (document.documentElement.offsetHeight || document.body.clientHeight) / 100) + 'px');
+			}
+
+.jqmWindow .jqmClose{padding-left:24px;padding-right:24px;padding-top:27px;padding-bottom:27px;cursor:pointer; font-family:'微软雅黑';background-color:#FFC90E;-webkit-border-radius: 10px;-moz-border-radius: 10px;color:#FFF;margin-right:45px;}
+
+/*guide与account的公用外框样式*/	
+.account{clear:both;margin:0 auto;width:600px;height:609px;border:1px #999 solid; background-color:#FFF;margin-top:30px;}
+
+/*public/public_footer样式*/
+.public_footer{clear: both;margin:0 auto;width:600px;border-top:1px dashed #C3C3C3;height:30px;}/* footer高度的负值 */
+.public_footer a:hover{background-color:#E8EDF4;}

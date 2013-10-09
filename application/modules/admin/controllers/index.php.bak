@@ -1,0 +1,92 @@
+<?php
+/*
+ * 管理员 控制器
+ */
+
+class Index extends CI_Controller 
+{
+	function __construct()
+	{
+		parent::__construct();
+
+		// Load the necessary stuff...
+		$this->load->helper(array('language', 'url', 'form', 'account/ssl'));
+        $this->load->library(array('account/authentication'));
+		$this->load->model(array('account/account_model'));
+		$this->load->model(array('user_model'));
+		$this->load->model(array('celebrity/celebrity_model'));
+		$this->load->model(array('hotel/hotel_model'));
+		$this->load->model(array('admin/admin_model'));
+		$this->lang->load(array('general'));
+	}
+	
+	function index()
+	{
+		if ($this->authentication->is_signed_in())
+		{
+			$data['account'] = $this->account_model->get_by_id($this->session->userdata('account_id'));
+		}
+		
+		$current_login_uid =$data['account']->uid;
+
+		$this->load->view('admin/index',$data);
+	}
+
+	function match()
+	{
+		//计算 所有用户(n^2) 的匹配结果
+		$this->admin_model->match_all_user();
+		$this->load->view('admin/match');
+
+	}
+
+	function insert_room()
+	{
+		//批量插入 房间
+		for($i=1;$i<=426;$i++)
+		{
+			$new_data = array(
+				'room_number' => 4000+$i ,
+				'host_id' => 0,
+				'region'  => 4.1,
+			);
+			$this->db->insert('room', $new_data);
+		}
+		echo "谢谢";
+		
+		$this->load->view('admin/insert_room');
+
+	}
+
+	function celebrity_count()
+	{
+		for($i=1;$i<=50;$i++)
+		{
+			$query = $this->db->from('celebrity_user')->where('cid',$i)->get();
+			$like    = 0;
+			$dislike = 0;
+			foreach($query->result() as $row)
+			{
+				if($row->score > 50)
+					$like++;
+				else
+					$dislike++;
+			}
+
+			$data['like_count'] = $like;
+			$data['dislike_count'] = $dislike;
+
+			$this->db->where('cid',$i)->update('celebrity',$data);
+
+		}
+
+		$this->load->view('admin/celebrity_count');
+
+	}
+
+
+
+}
+
+/* End of file index.php */
+/* Location: ./application/modules/hotel/controllers/index.php */

@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<link rel="stylesheet" href="<?php echo base_url(); ?>resource/public/css/base.css" type="text/css" media="screen" charset="utf-8" />
+    <link rel="stylesheet" href="<?php echo base_url(); ?>resource/public/css/common.css" type="text/css" media="screen" charset="utf-8" />
+    <link rel="stylesheet" href="<?php echo base_url(); ?>resource/people/css/people.css" type="text/css" media="screen" charset="utf-8" />
+    <link rel="stylesheet" href="<?php echo base_url(); ?>resource/celebrity/css/body.css" type="text/css" media="screen" charset="utf-8" />
+    <link rel="stylesheet" href="<?php echo base_url(); ?>resource/celebrity/css/celebrity.css" type="text/css" media="screen" charset="utf-8" />
+    <script src="<?php echo base_url(); ?>resource/public/js/jquery-1.7.1.js" type="text/javascript" language="javascript"></script>
+    <script src="<?php echo base_url(); ?>resource/people/js/people.js" type="text/javascript" language="javascript"></script>
+	<script src="<?php echo base_url(); ?>resource/celebrity/js/celebrity_index.js" type="text/javascript" language="javascript"></script>
+	<script src="<?php echo base_url(); ?>resource/public/js/jqModal.js" type="text/javascript" language="javascript" ></script>
+	<script src="<?php echo base_url(); ?>resource/celebrity/js/celebrity_profile.js" type="text/javascript" language="javascript"></script>
+	<script src="<?php echo base_url(); ?>resource/public/js/public.js" type="text/javascript" language="javascript"></script>
+	<script src="<?php echo base_url(); ?>resource/public/js/baidutongji.js" type="text/javascript" language="javascript"></script>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />	
+	
+	<title>
+		寻羊 Where is My Sheep
+	</title>
+</head>
+
+<div class="public-header f13">
+	<a href="<?php echo site_url('');?>">
+		<img src="<?php echo base_url(); ?>resource/public/image/public-logo.png" width="202" height="40" class="fl"/>
+	</a>
+	<div class="h20 w300 fr" style="margin-top:13px;">
+		
+
+		<?php if ($this->authentication->is_signed_in()): ?>
+			
+			<a href="<?php echo site_url('');?>" class="no_unl public-font ml50">寻羊首页</a>
+			
+			<a href="<?php echo site_url('people/index');?>" class="no_unl public-font ml40">我的寻羊</a>
+			
+			<a href="<?php echo site_url('hotel/index/lobby');?>" class="no_unl public-font ml40" target="_blank">海豚宾馆</a>
+
+		<?php else: ?>
+
+			<div class="fr ml30 public-font">
+				<a class="ml50 no_unl gray" href="<?php echo site_url('account/sign_up');?>">注册</a>
+				<a class="no_unl gray" href="<?php echo site_url('account/sign_in');?>">登录</a>
+			</div>
+
+		<?php endif; ?>
+	</div>
+</div>
+
+<!--横线-->
+<div class="w600" style="height:1px;border-top:#CCC 1px dashed; margin:0 auto;"></div>

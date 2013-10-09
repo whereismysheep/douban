@@ -1,0 +1,89 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/*
+ * Search_model 检索模型
+ */
+
+class Search_model extends CI_Model {
+	
+	/**
+	 * 通过关键词，检索标签
+	 *
+	 * @access public
+	 * @param string $key
+	 * @return array $result
+	 */
+	function search_tag( $key )
+	{
+		$tag_info = $this->db->where('tag_name',$key)->from('tag')->get();//在tag表中 检索$key
+		
+		if ($tag_info->num_rows() > 0) //存在匹配tag
+		{
+			return $this->search_celebrity_by_tag( $tag_info->row()->tag_id );
+		}
+		else //不存在匹配tag
+		{
+			return NULL;
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * 根据 标签(tag_id) 取得 对应人物
+	 *
+	 * @access public
+	 * @param int $tag_id
+	 * @return object celebrity
+	 */
+
+	function search_celebrity_by_tag( $tag_id )
+	{
+		$celebrity = $this->db->where('tag_id',$tag_id)->from('celebrity_tag')->get();
+		return $celebrity;
+	}
+
+
+
+
+
+	/*
+	private function __getSearchKey() //从html页面 获取关键词
+	{
+    	$key = '';
+	    // 为使搜索条件在分页时也有效，将搜索条件记录到SESSION中
+		if ( isset($_REQUEST['k']) && !empty($_REQUEST['k']) )//关键词已配置 并且 不为空
+		{
+			if($_GET['k'])
+			{
+				$key = html_entity_decode( urldecode($_GET['k']) ,ENT_QUOTES);//把 HTML 实体转换为字符，将 URL 编码后字符串还原成未编码的样子，ENT_QUOTES  解码双引号和单引号
+			}
+			elseif($_POST['k'])
+			{
+				$key = $_POST['k'];
+			}
+			// 关键字不能超过30个字符
+			if ( mb_strlen($key, 'UTF8') > 30 )
+			{
+				$key = mb_substr($key, 0, 30, 'UTF8');
+			}
+
+			$_SESSION['home_user_search_key'] = serialize( $key );//serialize储存资料到系统中，可以存储于任何地方。
+		}
+		else if ( is_numeric($_GET[C('VAR_PAGE')]) ) //获得已有的配置值 C('默认分页跳转发量')，
+		{
+			$key = unserialize( $_SESSION['home_user_search_key'] );
+		}
+		else
+		{
+			//unset($_SESSION['home_user_search_key']);
+		}
+
+		return trim($key);
+    }
+	*/
+
+}
+
+
+/* End of file account_model.php */
+/* Location: ./application/modules/account/models/account_model.php */

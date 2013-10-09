@@ -1,0 +1,34 @@
+<?php
+$this->load->view('hotel/hotel_header');
+?>
+<div class="room_top">
+
+	<div class="room_top_left fl">   
+		<div class="Photo_css">
+			<img src="http://localhost/whereismysheep/data/avatar/<?php echo $room_uid; ?>/middle.jpg"	class="fl w50 h50" />
+		</div>
+		<div class="Name_css public-font fb f12 tc">
+			<?php echo $this->account_model->get_account_name($room_uid); ?>
+		</div>
+	</div>
+
+	<div class="room_top_right fr public-font fb f12">		
+		相似度 :<span class="red"> <?php echo $score; ?></span>
+		<br/>
+		在我遇见的
+		<a href="<?php echo site_url("people/meet/$account->uid");?>" class="no_unl blue fb">
+			<?php echo $meet_number; ?>
+		</a>
+		个人里 排名
+		<a href="" class="no_unl blue fb">
+       		<?php echo $rank; ?>
+		</a>
+	</div>
+
+</div>
+
+<div class="w100 h50" style="margin-left:42px;">
+	<a href="<?php echo site_url("people/index/$room_uid");?>">
+		<img src="http://localhost/whereismysheep/resource/hotel/image/detailed_info.png" width="78" height="35" style="cursor:pointer;" />
+	</a>
+</div>

@@ -1,0 +1,63 @@
+html, body{height:100%;}
+img{border:none;}
+body{margin:0;padding:0;}
+.fl{float:left;display:inline;}
+.fr{float:right;display:inline;}
+.no_unl{text-decoration:none;}
+.tl{text-align:left;}
+.tc{text-align:center;}
+.tr{text-align:right;}
+
+/*public_header样式*/
+.public_header{width:800px;height:80px;clear:both;margin:0 auto;border-bottom:1px solid #CCC;}
+.public_header .font_logo{font-family:"微软雅黑";font-size:36px;font-weight:bold;line-height:200%;}
+.public_header .font_for{font-family: "Times New Roman", Times, serif;font-size:20px;font-weight:bold;font-style:oblique;margin-top:30px;margin-left:20px;margin-right:20px;}
+
+/*home样式*/
+.public_main{width:800px;clear:both;margin:0 auto;height:auto;}
+.pl_main_left{width:500px;height:650px;}
+.match_font{width:500px;height:24px;font-family:"微软雅黑";font-size:20px;font-weight:bold;margin-top:40px;margin-bottom:30px;}
+.match_result{width:500px;height:215px;}
+.result_img{width:100px;height:110px;text-align:center;margin-right:50px;}
+.result_name{width:100px;height:16px;font-family:"微软雅黑";font-size:13px;margin-top:10px;text-align:center;}
+
+.pl_main_right{width:280px;height:650px;font-family:"微软雅黑";}
+.pl_main_right .search_intro{width:280px;height:30px;font-family:"Times New Roman";font-size:small;color:#666;margin-top:20px;line-height:200%;}
+.pl_main_right .search_text{width:280px;height:90px;margin-top:80px;line-height:250%;font-size:16px;}
+.pl_main_right .search_text_pro{width:280px;color:#F00;font-family:"微软雅黑";font-size:13px;height:20px;margin-top:20px;}
+.pl_main_right .recommend{width:240px;height:50px;margin-top:315px;font-size:14px;}
+
+/*未登录前home页面*/
+.public_main .first{width:800px;height:220px;border-bottom:1px solid #CCC;font-family:"微软雅黑";font-size:16px;line-height:300%;margin-top:20px;}
+.public_main .second{width:800px;height:340px;border-bottom:1px solid #CCC;font-family:"微软雅黑";font-size:16px;line-height:300%;margin-top:25px;}
+.public_main .second a:hover{background-color:#CCC;}
+.public_main .third{width:800px;height:220px;border-bottom:1px solid #CCC;font-family:"微软雅黑";font-size:16px;line-height:300%;margin-top:20px;}
+.public_main .four{width:800px;height:300px;font-family:"微软雅黑";font-size:16px;margin-top:28px;}
+.public_main .four a{width:48px;height:48px;margin-top:40px;}
+
+/*index样式*/
+.public_main .match_main{width:550px;height:300px;clear:both;margin:0 auto;margin-top:15px;}
+.public_main .match_main .person_infor{width:160px;height:250px;vertical-align:middle;text-align:center;font-family:"Heiti SC";font-size:20px;}
+.public_main .match_main .match_word{width:230px;height:250px;vertical-align:middle; text-align:center;}
+.public_main .match_detail{width:545px;height:150px;clear:both;margin:0 auto;margin-top:50px;}
+.public_main .match_detail .detail_content{width:115px;height:200px;text-align:center;font-family:"Arial";font-size:28px; font-weight:bold;}
+.public_main .match_detail .detail_content .match_score{margin-bottom:30px;width:115px;height:30px;}
+.public_main .match_detail .detail_content .font_check{font-family:"Heiti SC";font-size:18px;font-weight:lighter; cursor:pointer;width:100px;height:40px;}
+.detail_content a:hover{background-color:#CCC;}
+
+/*match_movie match_music match_book样式*/
+.public_main .photo_infor{width:800px;height:100px;}
+.public_main .photo_infor .name_infor{font-family:"微软雅黑";font-size:18px;width:530px;margin-right:200px;margin-top:50px;}
+.public_main .star_intro{font-family:"微软雅黑";font-size:13px;height:16px;width:800px;margin-top:20px;}
+.public_main .mb_detail{width:800px;height:250px;margin-top:40px;}
+.public_main .mb_detail .mb_detail_title{font-family:"微软雅黑";font-size:16px;height:20px;width:800px;color:#009148;}
+.public_main .mb_detail .mb_detail_title a:hover{background-color:#CCC;}
+.public_main .mb_detail .mb_image{width:800px;height:220px;margin-top:30px;}
+.public_main .mb_detail .mb_image .img_display{width:85px;height:190px;margin-right:45px;}
+.public_main .mb_detail .mb_image .img_display .image_mb{width:75px;height:110px;position:relative;}
+.public_main .mb_detail .mb_image .img_display .image_mb img{bottom:0;display:block;position:absolute;}
+.public_main .mb_detail .mb_image .img_display .star_display{width:85px;height:65px;line-height:200%;}
+
+/*public_footer样式*/
+.public_footer{border-top:1px solid #CCC;width:800px;height:30px;clear:both;margin:0 auto;font-family:"微软雅黑";font-size:12px;color:#999; padding-bottom:10px;margin-top:60px;}
+.public_footer a:hover{background-color:#CCC;}

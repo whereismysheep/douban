@@ -1,0 +1,93 @@
+
+/*search/Index样式*/	
+html, body,.public-main{height:100%;}
+body >.public-main{height:auto;min-height:75%;min-height:70%\9;min-height:77% !important;}
+.public-main{width:600px;clear:both;margin:0 auto;}
+.search-out{ width:590px; height:150px;border-bottom:1px dashed #CCC;}
+.public-main .search-out .search-pf{ width:590px; height:100px;}
+.public-main .search-out .search-pf .search-font{margin-right:140px; margin-top:52px;font-family:'微软雅黑'; color: #666; width:330px; height:50px;}
+.public-main .search-out .search-name{width:80px; height:30px;font-family:'微软雅黑';}
+
+/*public/public-header样式*/
+.public-header{clear: both;margin:0 auto;width:600px;height:40px;margin-bottom:10px;margin-top:10px;}
+.public-header a:hover{background-color:#E8EDF4;}
+
+/*公共弹窗样式*/
+.jqmWindow{display: none;position: fixed;width:381px;height:272px;top:35%;left:34%; background-color:#FFF; border:#000 solid 1px; }
+.like_button{width:77px;height:77px;border:none;cursor:pointer;}
+.jqmOverlay { background-color: #000;}/*弹出框改变背景颜色*/
+			/* Fixed posistioning emulation for IE6
+			Star selector used to hide definition from browsers other than IE6
+			For valid CSS, use a conditional include instead */
+			* html .jqmWindow {
+				position: absolute;
+				top: expression((document.documentElement.scrollTop || document.body.scrollTop) + Math.round(17 * (document.documentElement.offsetHeight || document.body.clientHeight) / 100) + 'px');
+			}
+
+.jqmWindow .jqmClose:hover{background-color:#E8EDF4;}
+
+/*guide与account的公用外框样式*/	
+.account{clear:both;margin:0 auto;width:600px;height:609px;border:1px #C3C3C3 solid; background-color:#FFF;margin-top:30px;}
+.account .ac_home_left{width:350px;height:500px;}
+.account .ac_home_right{width:120px;height:175px;margin-top:320px;margin-right:33px;}
+.account .totle_intro{width:350px;height:300px;color:#3e3e3e;line-height:500%;}
+.account .public_enter{width:135px;height:51px;display:block;background-image:url(http://www.whereismysheep.com/beta/resource/public/image/public_enter.png);color:#1a863a;line-height:320%;}
+.account .public_enter:hover{width:135px;height:51px;display:block;background-image:url(http://www.whereismysheep.com/beta/resource/public/image/public_enter_hover.png);color:#1a863a;line-height:320%;}
+
+/*public/public_footer样式*/
+.footer{clear: both;margin:0 auto;width:600px;border-top:1px dashed #C3C3C3;height:30px;}/* footer高度的负值 */
+.footer a:hover{background-color:#E8EDF4;}
+
+#message a
+{
+	/* display: block before hiding */
+	display: block;display: none;
+
+	/* link is above all other elements */
+	z-index: 999; 
+
+	/* link doesn't hide text behind it */
+	opacity: .8;
+
+	/* link stays at same place on page */
+	position: fixed;
+
+	/* link goes at the bottom of the page */
+	top: 95%;
+	margin-top: -20px; /* = height + preferred bottom margin */
+
+	/* link is centered */
+	left:90%;
+	margin-left: -160px; /* = half of width */
+
+	/* make it big and easy to see (size, style to preferences) */
+	width:82px;height:35px;}
+
+/*account/account_avatar样式*/
+.public-main .profile_photo{width:100px;height:100px;border:1px solid #000;overflow:hidden;}
+.public-main .upload_content .left{border:1px solid #E5E5E5;}
+.public-main .upload_content .btn_b{height:25px;background-image:url(http://www.whereismysheep.com/beta/resource/account/image/upload_okay.png);border:none; cursor:pointer;}
+.public-main .upload_content .btn_w{height:25px;background-image:url(http://www.whereismysheep.com/beta/resource/account/image/upload_no.png);border:none;cursor:pointer;}
+
+/*account/account_password样式*/
+.public-main .password_content{height:400px;}
+.public-main .frame{width:298px;height:100px;}
+.public-main .frame .password_frame{line-height:30px\9;}/*IE+sogou*/
+.public-main .frame .password_frame{width:266px;height:32px;margin-right:20px;}
+.public-main .account_ps_bt{ background-image:url(http://www.whereismysheep.com/beta/resource/account/image/change_pw_ok.png);width:89px;height:36px;border:none;cursor:pointer;}
+.public-main .account_ps_bt:hover{ background-image:url(http://www.whereismysheep.com/beta/resource/account/image/password_ok_hover.png);width:89px;height:36px;border:none;cursor:pointer;}
+
+/*account/account_profile样式*/
+.public-main .user_name #profile_username{width:267px;height:35px;}
+.public-main .user_gender .settings_gender{width:170px;padding:6px;}
+.public-main .introuce #profile_introduction{width:560px;height:90px;text-overflow:ellipsis;line-height:200%;overflow:hidden;padding-top:20px;resize: none;}
+.public-main .update_button{ background-image:url(http://www.whereismysheep.com/beta/resource/account/image/update.png);width:89px;height:36px;border:none;cursor:pointer;}
+.public-main .update_button:hover{ background-image:url(http://www.whereismysheep.com/beta/resource/account/image/update_hover.png);width:89px;height:36px;border:none;cursor:pointer;}
+
+.public-main .account_infor a:hover{background-color:#E8EDF4;}
+/*home.php样式*/
+.public-main .login_a a{background:transparent;background-repeat:no-repeat;display:inline-block;width:135px;height:51px;
+background: url(http://www.whereismysheep.com/beta/resource/public/image/login_a.png) no-repeat;}
+
+.public-main .login_a a:hover{background:transparent;background-repeat:no-repeat;display:inline-block;width:135px;height:51px;
+background:url(http://www.whereismysheep.com/beta/resource/public/image/login_a_hover.png) no-repeat;}

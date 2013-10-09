@@ -1,0 +1,158 @@
+<?php
+$this->load->view('public/public_header');
+?>
+<body>
+
+<?php if ($this->authentication->is_signed_in()): ?><!-- 登录首页 -->
+
+<div class="public-main public-font">
+	<h1 class="font_find f19 mt45 h70">
+		<?php echo $this->account_model->get_account_name($account->uid); ?>，看看发现了谁～
+	</h1>
+		
+	<h1 class="font_similar f15">和你 <span class="brightblue">最相似</span> 的人</h1>
+		
+	<div class="w400 h170">
+		<?php foreach($similar_match->result() as $row): ?>
+			<div class="mt35 w100 fl ml15">
+				<a href="<?php echo site_url("people/index/$row->guest_uid");?>" class="no_unl" target="_blank">
+					<img src="<?php echo base_url(); ?>data/avatar/<?php echo $row->guest_uid; ?>/middle.jpg"/>
+				</a>
+				<div class="f12 tc mt20 w50" style="color:#3e3e3e;">
+					<?php echo $this->account_model->get_account_name($row->guest_uid); ?>
+             	</div>
+        	</div>
+		<?php endforeach; ?>
+	</div>
+
+	<h1 class="font_similar f15">和你 <span class="brightblue">最不同</span> 的人</h1>
+	<div class="w600 h180" style="border-bottom:1px dashed #C3C3C3;">
+		<?php foreach($different_match->result() as $row): ?>			
+    		<div class="mt35 w100 fl ml15">
+				<a href="<?php echo site_url("people/index/$row->guest_uid");?>" class="no_unl" target="_blank">
+					<img src="<?php echo base_url(); ?>data/avatar/<?php echo $row->guest_uid; ?>/middle.jpg"/>
+				</a>
+				<div class="f12 tc mt20 w50" style="color:#3e3e3e;">
+					<?php echo $this->account_model->get_account_name($row->guest_uid); ?>
+             	</div>
+			</div>
+		<?php endforeach; ?>
+	</div>
+
+	<h1 class="font_find f19 mt45 h70">
+		发表更多看法～
+	</h1>
+    <div class="w600 h150">
+	    <div class="h40 w600 f15">
+			最具争议
+		</div>
+  		<div class="w600 fl h100">
+			<?php foreach($controversy->result() as $row): ?>
+            <ul>
+            	<li class="fl tc w100 mt10 f12">
+					<a href="<?php echo site_url("celebrity/profile/index/$row->cid");?>" class="no_unl">
+						<img src="<?php echo base_url(); ?>data/celebrity/<?php echo $row->cid; ?>/middle.jpg" />
+					</a>
+                    <br/>    
+					<div class="mt10" style="color:#3e3e3e;"><?php echo $row->name; ?></div> 
+            	</li> 
+            </ul>	
+			<?php endforeach; ?>  
+    	</div>
+	</div>	
+	
+	<div class="w600 h150 mt60">
+		<div class="h40 w600 f15">
+			最受欢迎
+		</div>
+        <div class="w600 fl h100">
+	    	<?php foreach($like_most->result() as $row): ?>
+            <ul>		
+                <li class="fl tc w100 mt10 f12">
+					<a href="<?php echo site_url("celebrity/profile/index/$row->cid");?>" class="no_unl">
+						<img  src="<?php echo base_url(); ?>data/celebrity/<?php echo $row->cid; ?>/middle.jpg" />
+					</a>
+               		<br/>
+					<div class="mt10" style="color:#3e3e3e;"><?php echo $row->name; ?></div> 
+                </li>
+            </ul>		
+			<?php endforeach; ?>
+        </div>
+	</div>
+
+	<div class="w600 h200 mt60" style="border-bottom:1px dashed #C3C3C3;">
+		<div class="h40 w600 f15">
+			最被讨厌
+		</div>
+        <div class="w600 fl h100">
+			<?php foreach($dislike_most->result() as $row): ?>
+            <ul>
+                <li class="fl tc w100 mt10 f12">
+					<a href="<?php echo site_url("celebrity/profile/index/$row->cid");?>" class="no_unl">
+						<img src="<?php echo base_url(); ?>data/celebrity/<?php echo $row->cid; ?>/middle.jpg" />
+					</a>
+                    <br/>
+					<div class="mt10" style="color:#3e3e3e;"><?php echo $row->name; ?></div>
+                </li>
+            </ul>
+			<?php endforeach; ?>
+       	</div>
+    </div>	
+	
+	<h1 class="font_find f19 mt45 h40">
+		探索海豚宾馆，发现同类～
+	</h1>	
+</div>
+<div class="account f15 public-font" style="margin-bottom:90px;height:550px;border:1px solid #f0f0f0;">
+	<div class="ml60 ac_home_left fl">
+		<div class="totle_intro mt30">
+			<span class="brightblue">海豚宾馆</span> ( dolphin hotel ) 是寻羊居民 落脚的地方
+			<br/>
+			大家根据 <span style="color:#ffc90e;">看法差异</span> 分布在 <span style="color:#ffc90e;">不同楼层</span> 的房间
+			<br/>
+			每个新来的家伙 都会得到 <span class="brightblue">一个房间</span>
+			<br/>
+			快去发现你的同类～
+		</div>	
+		<a class="public_enter f16 mt30 no_unl tc" href="<?php echo site_url('hotel/index/lobby');?>">&nbsp; enter</a>
+	</div>
+	<div class="ac_home_right fr">
+		<img src="http://localhost/whereismysheep/resource/hotel/image/SheepMan.PNG" width="120" height="175" border="0" alt="">
+	</div>
+</div>
+
+<?php else: ?><!-- 未登录首页 -->
+
+<div class="public-main" style="height:900px;">
+	
+	<div class="w600 h150 mt50">
+		<h1 class="f19 public-font mt15 ml15">
+			世界上 是否存在 <span class="brightblue">和你一样的人</span>？
+		</h1>
+  		
+   		<h1 class="f15 public-font ml15 mt50">
+			只需&nbsp;&nbsp;<span class="f20" style="color:#ffcc66;">2 步</span>&nbsp;&nbsp;寻羊 帮助你 发现 他/她
+		</h1>
+        
+    </div>
+	
+	<div class=" h100 w600">
+		<div class="login_a fl w200">
+			<a class="ml20" href="<?php echo site_url('account/sign_up');?>" >	
+			</a>
+		</div>
+		<h2 class="f13 public-font mt20 ml20 fr">
+			已有帐号？<a class="no_unl" href="<?php echo site_url('account/sign_in');?>" style="color:#c4c4c4;">直接登录</a>
+		</h2>
+	</div>
+
+	<img src="<?php echo base_url(); ?>resource/public/image/home_show.PNG" width="593" height="505" class="mt10" style="margin-left:3.5px;"/>
+	
+</div>
+
+<?php endif; ?>
+  
+</body>
+<?php
+$this->load->view('public/public_footer');
+?>

@@ -1,0 +1,17 @@
+.account .font_signup{color:#22aa4a;margin-left:140px;margin-top:100px;font-size:21px;}
+.account .font_signin{color:#22aa4a;margin-top:100px;font-size:21px;margin-left:220px;}
+.account .sign_main{width:298px;height:350px;margin-left:168px;}
+.account .sign_main .sign_frame_top{width:298px;height:230px;}
+.account .sign_main .sign_frame_top .frame{width:298px;height:50px;}
+.account .sign_main .sign_frame_top .frame .sign_up_frame{line-height:30px\9;}/*IE+sogou*/
+.account .sign_main .sign_frame_top .frame .sign_up_frame{width:211px;height:32px;margin-right:30px;}
+.account .sign_main .sign_register_bottom{width:298px;height:70px;}
+.account .sign_main .sign_register_bottom  .button{background:transparent;background-repeat:no-repeat; background-image: url(http://www.whereismysheep.com/whereismysheep/resource/account/image/sign_in.png);width:89px;height:41px;border:none;cursor:pointer;}
+.account .sign_main .sign_register_bottom  .button:hover{background:transparent;background-repeat:no-repeat; background-image: url(http://www.whereismysheep.com/whereismysheep/resource/account/image/sign_in_hover.png);width:89px;height:41px;border:none;cursor:pointer;}
+.account .sign_main .sign_register_bottom  .font_re{margin-left:55px;margin-top:12px;}
+.account .sign_main .sign_frame_top .check_button .check_but_left{width:70px !important;padding-top:3px;padding-left:2px;height:30px;}
+.account .sign_main .sign_frame_top .check_button .check_but_left .checkbox {margin-top:3px;}
+.account .sign_main .sign_frame_top .check_button .check_but_left .checkbox{margin-top:-0.009em\9;}/*IE+sogou*/
+.account .sign_main .sign_frame_top .check_button .button{background:transparent;background-repeat:no-repeat;background-image:url(http://www.whereismysheep.com/whereismysheep/resource/account/image/sign_up.png);width:89px;height:41px;border:none;cursor:pointer;}
+.account .sign_main .sign_frame_top .check_button .button:hover{background:transparent;background-repeat:no-repeat;background-image:url(http://www.whereismysheep.com/whereismysheep/resource/account/image/sign_up_hover.png);width:89px;height:41px;border:none;cursor:pointer;}
+.account a:hover{background-color:#E8EDF4;}

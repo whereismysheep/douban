@@ -1,0 +1,556 @@
+<?php
+/*
+ * People Controller 用户 控制器
+ */
+
+class People extends CI_Controller 
+{
+	function __construct()
+	{
+		parent::__construct();
+
+		// Load the necessary stuff...
+		$this->load->helper(array('language', 'url', 'form', 'account/ssl'));
+        $this->load->library(array('account/authentication'));
+		$this->load->model(array('user_model','account/account_model','account/avatar_model','celebrity/celebrity_model'));
+		$this->lang->load(array('general'));
+	}
+	
+	//用户主页
+	function index($page_uid = NULL)
+	{
+		//maintain_ssl();
+		
+		if (!$this->authentication->is_signed_in())
+		{
+			redirect('account/sign_in');
+		}
+
+		//获取登录用户信息
+		$data['account'] = $this->account_model->get_by_id($this->session->userdata('account_id'));
+		$current_login_uid = $data['account']->uid;
+
+		$data['page_uid'] = $page_uid ? $page_uid : $current_login_uid;
+
+		if($current_login_uid == $data['page_uid'])//当前 登录用户 的主页
+		{
+			//遇见的人
+			$data['meet'] = $this->db->from('match')->where('host_uid',$current_login_uid)->where('if_has_been_matched',1)->limit(6)->get();
+			$data['meet_count'] = $this->db->from('user_information')->where('uid',$current_login_uid)->get()->row()->meet_number;
+			
+			//评价过的大众人物
+			$data['celebrity'] = $this->db->where('uid', $data['page_uid'])->from('celebrity_user')->limit(6)->get();
+			$data['celebrity_count'] = $this->db->where('uid', $data['page_uid'])->from('celebrity_user')->get()->num_rows();
+
+			$data['check_avatar'] = $this->db->from('user_information')->where('uid',$current_login_uid)->get()->row()->avatar;
+			
+			$data['introduction'] = $this->user_model->get_user_introduction( $current_login_uid );
+
+			/*最相似的人
+			$data['similar_match']   = $this->db->from('match')->where('host_uid',$current_login_uid)->order_by("score", "desc")->limit(3)->get();		
+			//防止最相似 和最不同 重复
+			$i = 0;
+			foreach($data['similar_match']->result() as $row)
+			{
+				$temp[$i] = $row->guest_uid;
+			}
+			//最不同的人
+			$data['different_match'] = $this->db->from('match')->where('host_uid',$current_login_uid)->where_not_in('guest_uid',$temp)->order_by("score", "asc") ->limit(3)->get();
+			*/
+
+			
+		}
+		else//查看 其他用户 主页
+		{
+			if($this->input->post('following_state')=="add")//感兴趣（新加关注）
+			{
+				$this->user_model->add_following($page_uid,$current_login_uid);
+			}
+			elseif($this->input->post('following_state')=="取消")//不感兴趣（取消关注）
+			{
+				$this->user_model->cancel_following($page_uid,$current_login_uid);
+			}
+
+			//取得 相互关注信息
+			$data['relationship'] = $this->user_model->get_relationship( $current_login_uid, $page_uid );
+
+			$data['introduction'] = $this->user_model->get_user_introduction( $page_uid );
+
+			$data['gender'] = $this->user_model->get_user_gender( $page_uid );
+			
+			//对 当前登录用户current_login_uid 和 当前页面用户page_uid 进行匹配
+			$result = $this->celebrity_model->match($current_login_uid,$page_uid);
+			
+			//匹配得分
+			$data['score'] = $result['score'];
+			
+			//相似度排名，暂时只包含 人物相似度
+			$data['rank'] = $result['rank'];
+
+			//遇见的人数
+			$data['meet_number'] = $this->db->from('user_information')->where('uid',$current_login_uid)->get()->row()->meet_number;
+		
+			$data['same_count'] = $result['same_c'];
+			$same_display = $result['same_c']<10? $result['same_c'] : 10;
+			for($i=0; $i<$same_display; $i++)
+			{
+				$data['same'][$i] = $result['same'][$i];
+			}
+
+			$data['different_count'] = $result['different_c'];
+			$different_display = $result['different_c']<10? $result['different_c'] : 10;
+			for($i=0; $i<$different_display; $i++)
+			{
+				$data['different'][$i] = $result['different'][$i];
+			}
+
+			$data['following'] = $this->db->where('fid',$data['page_uid'])->from('follow')->limit(11)->get();
+			$data['following_num'] = $this->db->where('fid',$data['page_uid'])->from('follow')->get()->num_rows();
+		}
+
+		$this->load->view('people/index', $data);
+	}
+
+	/*
+	function signatrue()
+	{
+		$data['signatrue'] = $this->input->post('signatrue_content');
+		$this->db->where('uid',$this->input->post('uid'))->update('user_information',$data);
+	}
+	*/
+	
+	//登录用户 遇见的所有人
+	function meet($type="all")
+	{
+		if (!$this->authentication->is_signed_in())//未登录
+		{
+			redirect('account/sign_in');
+		}
+		
+		$data['account'] = $this->account_model->get_by_id($this->session->userdata('account_id'));//获取登录用户信息
+		$current_login_uid = $data['account']->uid;
+
+		/*/分页，每页取5人
+		$data['rank'] = $this->db->from('match')->where('host_uid',$current_login_uid)->where('if_has_been_matched',1)->where('rank >',$rank_page)->where('rank <=',$rank_page+5)->order_by("score", "desc")->get();
+		*/
+		if(strcmp($type,"all")==0)
+		{
+			$data['rank'] = $this->db->from('match')->where('host_uid',$current_login_uid)->where('if_has_been_matched',1)->order_by("score", "desc")->get();
+		}
+		elseif(strcmp($type,"following")==0)
+		{
+			$data['rank'] = $this->db->where('fid',$current_login_uid)->from('follow')->get();
+		}
+		elseif(strcmp($type,"follower")==0)
+		{
+			$data['rank'] = $this->db->where('uid',$current_login_uid)->from('follow')->get();
+		}
+
+		$data['rank_count'] = $data['rank']->num_rows();
+
+		//遇见的人数
+		//$data['meet_number'] = $this->db->from('user_information')->where('uid',$current_login_uid)->get()->row()->meet_number;
+		/*分页配置
+		$this->load->library('pagination');
+		$config['base_url'] = site_url('people/meet');
+		$config['total_rows'] = $data['meet_number'];
+		$config['per_page'] = 5;
+		//$config['use_page_numbers'] = TRUE;
+		//$config['num_links'] = 10;
+		$config['prev_link'] = '前页';
+		$config['next_link'] = '后页';
+		$config['anchor_class'] = 'class="page_num fl public-font no_unl mr10"';
+		$this->pagination->initialize($config);
+		*/
+		$data['type'] = $type;
+		
+		$this->load->view('people/meet', $data);
+	}
+
+	//关注
+	function following($page_uid = NULL)
+	{
+		if (!$this->authentication->is_signed_in())
+		{
+			redirect('account/sign_in');
+		}
+
+		$data['account'] = $this->account_model->get_by_id($this->session->userdata('account_id'));//获取登录用户信息
+		$current_login_uid = $data['account']->uid;
+
+		$data['page_uid'] = $page_uid ? $page_uid : $current_login_uid;
+
+		//$follow_info = $this->user_model->get_user_follow($data['page_uid']);
+		
+		$data['following'] = $this->db->where('fid',$data['page_uid'])->from('follow')->get();
+		
+		$this->load->view('people/following', $data);
+	}
+
+	//被关注
+	function follower($page_uid = NULL)
+	{
+		if (!$this->authentication->is_signed_in())
+		{
+			redirect('account/sign_in');
+		}
+
+		$data['account'] = $this->account_model->get_by_id($this->session->userdata('account_id'));//获取登录用户信息
+		$current_login_uid = $data['account']->uid;
+
+		$data['page_uid'] = $page_uid ? $page_uid : $current_login_uid;
+
+		//$follow_info = $this->user_model->get_user_follow($data['page_uid']);
+		
+		$data['follower'] = $this->db->where('uid',$data['page_uid'])->from('follow')->get();
+		
+		$this->load->view('people/follower', $data);
+	}
+
+	//共同看法页面
+	function all($page_uid)
+	{
+		if (!$this->authentication->is_signed_in())//未登录
+		{
+			redirect('account/sign_in');
+		}
+		
+		$data['account'] = $this->account_model->get_by_id($this->session->userdata('account_id'));//获取登录用户信息
+		$current_login_uid = $data['account']->uid;
+
+		if($page_uid == $current_login_uid)
+		{
+			redirect('');
+		}
+
+		$data['page_uid'] = $page_uid;
+
+		$data['my_score'] = -1;
+		if($this->input->post('my_score')!=NULL)//筛选 看法
+		{
+			$data['my_score'] = $this->input->post('my_score');
+		}
+		
+		//对 当前登录用户current_login_uid 和 当前页面用户page_uid 进行匹配	
+		$result = $this->celebrity_model->match( $current_login_uid, $page_uid, $data['my_score'] );	
+		
+		//匹配得分
+		$data['score'] = $result['score'];
+		
+		//相似度排名，暂时只包含 人物相似度
+		$data['rank'] = $result['rank'];
+
+		$data['match_detail_count'] = 0;	
+		
+		for( $i = 0; $i < $result['special_all_c']; $i++)
+		{
+			$my_score = $this->celebrity_model->get_user_celebrity_score($current_login_uid, $result['special_all'][$i]);
+			$his_score = $this->celebrity_model->get_user_celebrity_score($page_uid, $result['special_all'][$i]);
+
+			$data['match_detail'][ $data['match_detail_count'] ++ ] = 
+				array(
+					"my_score"     => intval($my_score),
+					"his_score"    => intval($his_score),
+				    "similarity"   => abs($my_score-$his_score),
+					"cid"          => $result['special_all'][$i]
+				);
+		}
+
+		if($data['match_detail_count']>0)
+		{
+			foreach ($data['match_detail'] as $key => $value) 
+			{
+				$degree[$key] = $value['my_score'];
+				$similarity[$key] = $value['similarity'];
+			}
+
+			array_multisort($degree,SORT_DESC,$similarity,SORT_ASC,$data['match_detail']);//排序
+		}
+		
+		$this->load->view('people/all', $data);
+	}
+	
+	//共同看法页面
+	function same($page_uid)
+	{
+		if (!$this->authentication->is_signed_in())//未登录
+		{
+			redirect('account/sign_in');
+		}
+		
+		$data['account'] = $this->account_model->get_by_id($this->session->userdata('account_id'));//获取登录用户信息
+		$current_login_uid = $data['account']->uid;
+
+		if($page_uid == $current_login_uid)
+		{
+			redirect('');
+		}
+
+		$data['page_uid'] = $page_uid;
+
+		$data['my_score'] = -1;
+		if($this->input->post('my_score')!=NULL)//筛选 看法
+		{
+			$data['my_score'] = $this->input->post('my_score');
+		}
+			
+		//对 当前登录用户current_login_uid 和 当前页面用户page_uid 进行匹配
+		$result = $this->celebrity_model->match( $current_login_uid, $page_uid, $data['my_score'] );
+		
+		//匹配得分
+		$data['score'] = $result['score'];
+		
+		//相似度排名，暂时只包含 人物相似度
+		$data['rank'] = $result['rank'];
+
+		$data['match_detail_count'] = 0;	
+		
+		for( $i = 0; $i < $result['special_same_c']; $i++)
+		{
+			$my_score = $this->celebrity_model->get_user_celebrity_score($current_login_uid, $result['special_same'][$i]);
+			$his_score = $this->celebrity_model->get_user_celebrity_score($page_uid, $result['special_same'][$i]);
+
+			$data['match_detail'][ $data['match_detail_count'] ++ ] = 
+				array(
+					"my_score"     => intval($my_score),
+					"his_score"    => intval($his_score),
+				    "similarity"   => abs($my_score-$his_score),
+					"cid"          => $result['special_same'][$i]
+				);
+		}
+
+		if($data['match_detail_count']>0)
+		{
+			foreach ($data['match_detail'] as $key => $value) 
+			{
+				$degree[$key] = $value['my_score'];
+				$similarity[$key] = $value['similarity'];
+			}
+
+			array_multisort($degree,SORT_DESC,$similarity,SORT_ASC,$data['match_detail']);//排序
+		}
+		
+		$this->load->view('people/same', $data);
+	}
+	
+	//相反看法页面
+	function different($page_uid)
+	{
+		if (!$this->authentication->is_signed_in())//未登录
+		{
+			redirect('account/sign_in');
+		}
+		
+		$data['account'] = $this->account_model->get_by_id($this->session->userdata('account_id'));//获取登录用户信息
+		$current_login_uid = $data['account']->uid;
+
+		if($page_uid == $current_login_uid)
+		{
+			redirect('');
+		}
+
+		$data['page_uid'] = $page_uid;
+
+		$data['my_score'] = -1;
+		if($this->input->post('my_score')!=NULL)//筛选 看法
+		{
+			$data['my_score'] = $this->input->post('my_score');
+		}
+			
+		//对 当前登录用户current_login_uid 和 当前页面用户page_uid 进行匹配
+		$result = $this->celebrity_model->match($current_login_uid, $page_uid, $data['my_score'] );
+		//匹配得分	
+		$data['score'] = $result['score'];
+		//相似度排名，暂时只包含 人物相似度
+		$data['rank'] = $result['rank'];
+
+		$data['match_detail_count'] = 0;
+		
+		for( $i = 0; $i < $result['special_different_c']; $i++)
+		{
+			$my_score = $this->celebrity_model->get_user_celebrity_score($current_login_uid, $result['special_different'][$i]);
+			$his_score = $this->celebrity_model->get_user_celebrity_score($page_uid, $result['special_different'][$i]);
+
+			$data['match_detail'][ $data['match_detail_count'] ++ ] = 
+				array(
+					"my_score"     => intval($my_score),
+					"his_score"    => intval($his_score),
+				    "similarity"   => abs($my_score-$his_score),
+					"cid"          => $result['special_different'][$i]
+				);
+		}
+
+		if($data['match_detail_count']>0)
+		{		
+			foreach ($data['match_detail'] as $key => $value) 
+			{
+				$degree[$key] = $value['my_score'];
+				$similarity[$key] = $value['similarity'];
+			}
+
+			array_multisort($degree,SORT_DESC,$similarity,SORT_DESC,$data['match_detail']);//排序
+		}
+		
+		$this->load->view('people/different', $data);
+	}
+
+	/*
+	对 登录用户uid 和 页面用户page_uid 进行匹配
+	*/
+	function match($page_uid)
+	{
+		//maintain_ssl();
+		
+		if (!$this->authentication->is_signed_in())//未登录
+		{
+			redirect('account/sign_in');
+		}
+		
+		$data['account'] = $this->account_model->get_by_id($this->session->userdata('account_id'));//获取登录用户信息
+		$current_login_uid = $data['account']->uid;
+
+		if($page_uid == $current_login_uid)
+		{
+			redirect('');
+		}
+
+		$data['page_uid'] = $page_uid;
+
+		if($this->input->post('following_state')=="add")//感兴趣（新加关注）
+		{
+			$this->user_model->add_following($page_uid,$current_login_uid);
+		}
+		elseif($this->input->post('following_state')=="取消")//不感兴趣（取消关注）
+		{
+			$this->user_model->cancel_following($page_uid,$current_login_uid);
+		}
+
+		//取得 相互关注信息
+		$data['relationship'] = $this->user_model->get_relationship( $current_login_uid, $page_uid );
+			
+		//对 当前登录用户current_login_uid 和 当前页面用户page_uid 进行匹配
+		$result = $this->celebrity_model->match($current_login_uid,$page_uid);
+			
+		$data['score'] = $result['score'];//匹配得分
+		
+		$data['same_count'] = $result['same_c'];
+		$same_display = $result['same_c']<6? $result['same_c'] : 6;
+		for($i=0; $i<$same_display; $i++)
+		{
+			$data['same'][$i] = $result['same'][$i];
+		}
+
+		$data['different_count'] = $result['different_c'];
+		$different_display = $result['different_c']<6? $result['different_c'] : 6;
+		for($i=0; $i<$different_display; $i++)
+		{
+			$data['different'][$i] = $result['different'][$i];
+		}
+		
+		//相似度排名，暂时只包含 人物相似度
+		$data['rank'] = $result['rank'];
+
+		//遇见的人数
+		$data['meet_number'] = $this->db->from('user_information')->where('uid',$current_login_uid)->get()->row()->meet_number;
+
+		$this->load->view('people/match',$data);
+	}
+
+
+	/*
+	详细匹配信息
+	*/
+	function match_detail( $page_uid, $type="all" )
+	{
+		//maintain_ssl();
+		
+		if (!$this->authentication->is_signed_in())//未登录
+		{
+			redirect('account/sign_in');
+		}
+		
+		$data['account'] = $this->account_model->get_by_id($this->session->userdata('account_id'));//获取登录用户信息
+		$current_login_uid = $data['account']->uid;
+
+		if($page_uid == $current_login_uid)
+		{
+			redirect('');
+		}
+
+		$data['page_uid'] = $page_uid;
+
+		if($this->input->post('following_state')=="add")//感兴趣（新加关注）
+		{
+			$this->user_model->add_following($page_uid,$current_login_uid);
+		}
+		elseif($this->input->post('following_state')=="取消")//不感兴趣（取消关注）
+		{
+			$this->user_model->cancel_following($page_uid,$current_login_uid);
+		}
+
+		//取得 相互关注信息
+		$data['relationship'] = $this->user_model->get_relationship( $current_login_uid, $page_uid );
+			
+		//对 当前登录用户current_login_uid 和 当前页面用户page_uid 进行匹配
+		$result = $this->celebrity_model->match($current_login_uid, $page_uid);
+			
+		$data['score'] = $result['score'];//匹配得分
+
+		$data['match_detail_count'] = 0;
+		for($i=0;$i<$result['same_c'];$i++)
+		{
+			$my_score = $this->celebrity_model->get_user_celebrity_score($current_login_uid, $result['same'][$i]);
+			$his_score = $this->celebrity_model->get_user_celebrity_score($page_uid, $result['same'][$i]);
+
+			$data['match_detail'][ $data['match_detail_count'] ++ ] = 
+				array(
+					"my_score"     => intval($my_score),
+					"his_score"    => intval($his_score),
+				    "similarity"   => abs($my_score-$his_score),
+					"cid"          => $result['same'][$i]
+				);
+		}
+		
+
+		foreach ($data['match_detail'] as $key => $value) {
+
+			$degree[$key] = $value['my_score'];
+
+			$similarity[$key] = $value['similarity'];
+
+		}
+
+
+		array_multisort($degree,SORT_DESC,$similarity,SORT_ASC,$data['match_detail']);
+
+		//var_dump($data['match_detail']);
+
+
+		/*
+		if($type)
+		{
+
+		}
+		elseif($type)
+		{
+
+		}
+		else
+		{
+
+		}
+		*/
+			
+		//相似度排名，暂时只包含 人物相似度
+		$data['rank'] = $result['rank'];
+
+		//遇见的人数
+		$data['meet_number'] = $this->db->from('user_information')->where('uid',$current_login_uid)->get()->row()->meet_number;
+
+		$this->load->view('people/match_detail',$data);
+	}
+
+}
+
+/* End of file people.php */
+/* Location: ./application/controllers/people.php */
